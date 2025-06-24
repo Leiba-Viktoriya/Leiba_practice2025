@@ -15,13 +15,7 @@ jobs:
         dotnet-version: '8.0.x'
 
     - name: Restore dependencies
-      working-directory: practice2025
-      run: dotnet restore
+      run: dotnet restore practice2025/practice2025.sln
 
-    - name: Build main project
-      working-directory: practice2025/task01
-      run: dotnet build --no-restore --configuration Release
-
-    - name: Run tests
-      working-directory: practice2025
-      run: dotnet test task01Tests/task01Tests.csproj --logger "console;verbosity=normal"
+    - name: Test
+      run: dotnet test practice2025/practice2025.sln --logger "console;verbosity=normal"
