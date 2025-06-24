@@ -1,32 +1,27 @@
 name: .NET Build and Test
 
-on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+on: [push, pull_request]
 
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
     
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-
-    - name: Setup .NET 8.x
+    - uses: actions/checkout@v4
+      
+    - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: '8.0.x'
-
-    - name: Restore dependencies
+        
+    - name: Restore
       working-directory: practice2025
       run: dotnet restore
-
+      
     - name: Build
       working-directory: practice2025
       run: dotnet build --no-restore --configuration Release
-
+      
     - name: Run tests
       working-directory: practice2025
-      run: dotnet test --no-build --verbosity normal
+      run: dotnet test task01Tests/task01Tests.csproj --no-build --logger "console;verbosity=normal"
