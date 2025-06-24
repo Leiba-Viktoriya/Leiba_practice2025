@@ -24,4 +24,4 @@ jobs:
 
     - name: Run tests
       working-directory: practice2025
-      run: dotnet test task01Tests/task01Tests.csproj --no-build --logger "console;verbosity=normal"
+      run: dotnet test task01Tests/task01Tests.csproj --logger "console;verbosity=normal"
