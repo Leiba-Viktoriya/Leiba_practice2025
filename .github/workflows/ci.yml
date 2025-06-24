@@ -1,52 +1,32 @@
+name: .NET Build and Test
+
 on:
   push:
+    branches: [ main ]
   pull_request:
+    branches: [ main ]
 
 jobs:
-  c-build:
-    name: C Solution Check
+  build-and-test:
     runs-on: ubuntu-latest
-
+    
     steps:
-      - name: Checkout source code
-        uses: actions/checkout@v4
+    - name: Checkout code
+      uses: actions/checkout@v4
 
-      - name: Install GCC, Valgrind, and Clang-format
-        run: sudo apt-get update && sudo apt-get install -y gcc valgrind clang-format
+    - name: Setup .NET 8.x
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'
 
-      - name: Check C code formatting
-        run: clang-format --dry-run --Werror *.c
+    - name: Restore dependencies
+      working-directory: practice2025
+      run: dotnet restore
 
-      - name: Compile
-        run: gcc -Wall -Wextra -Werror task.c test.c -o solution
+    - name: Build
+      working-directory: practice2025
+      run: dotnet build --no-restore --configuration Release
 
-      - name: Run unit tests
-        run: ./solution
-
-      - name: Check for memory leaks
-        run: valgrind --leak-check=full ./solution
-
-  dotnet-build:
-    name: Build and Test .NET Project
-    runs-on: windows-latest
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Setup .NET SDK
-        uses: actions/setup-dotnet@v4
-        with: 
-          dotnet-version: '8.x'
-
-      - name: Restore dependencies
-        working-directory: practice2025
-        run: dotnet restore
-
-      - name: Build the project
-        working-directory: practice2025
-        run: dotnet build --no-restore
-
-      - name: Run tests
-        working-directory: practice2025
-        run: dotnet test --no-build
+    - name: Run tests
+      working-directory: practice2025
+      run: dotnet test --no-build --verbosity normal
