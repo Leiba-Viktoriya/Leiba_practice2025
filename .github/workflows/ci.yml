@@ -1,9 +1,9 @@
-name: .NET CI
+name: .NET Build and Test
 
 on: [push, pull_request]
 
 jobs:
-  test-project:
+  build-and-test:
     runs-on: ubuntu-latest
 
     steps:
@@ -15,7 +15,9 @@ jobs:
         dotnet-version: '8.0.x'
 
     - name: Restore dependencies
-      run: dotnet restore task01Tests/task01Tests.csproj
+      working-directory: practice2025
+      run: dotnet restore
 
     - name: Run tests
+      working-directory: practice2025
       run: dotnet test task01Tests/task01Tests.csproj --logger "console;verbosity=normal"
