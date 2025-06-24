@@ -1,52 +1,29 @@
+name: DotNET CI Pipeline
+
 on:
   push:
+    branches: [ main, task01 ]
   pull_request:
+    branches: [ main ]
 
 jobs:
-  c-build:
-    name: C Solution Check
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout source code
-        uses: actions/checkout@v4
-
-      - name: Install GCC, Valgrind, and Clang-format
-        run: sudo apt-get update && sudo apt-get install -y gcc valgrind clang-format
-
-      - name: Check C code formatting
-        run: clang-format --dry-run --Werror *.c
-
-      - name: Compile
-        run: gcc -Wall -Wextra -Werror task.c test.c -o solution
-
-      - name: Run unit tests
-        run: ./solution
-
-      - name: Check for memory leaks
-        run: valgrind --leak-check=full ./solution
-
-  dotnet-build:
-    name: Build and Test .NET Project
+  build-and-test:
     runs-on: windows-latest
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@v4
-        with: 
-          dotnet-version: '8.x'
+        with:
+          dotnet-version: 8.0.x
 
       - name: Restore dependencies
-        working-directory: practice2025
-        run: dotnet restore
+        run: dotnet restore ./practice2025
 
-      - name: Build the project
-        working-directory: practice2025
-        run: dotnet build --no-restore
+      - name: Build solution
+        run: dotnet build ./practice2025 --no-restore --configuration Release
 
       - name: Run tests
-        working-directory: practice2025
-        run: dotnet test --no-build
+        run: dotnet test ./practice2025 --no-build --configuration Release
