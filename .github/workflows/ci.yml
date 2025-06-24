@@ -1,19 +1,30 @@
-name: .NET CI
+name: .NET Build and Test
 
-on: [push]
+on:
+  push:
+  pull_request:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
+
     steps:
-    - uses: actions/checkout@v3
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v3
-      with:
-        dotnet-version: 8.0.x
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup .NET SDK
+      uses: actions/setup-dotnet@v4
+      with: 
+        dotnet-version: '8.x'
+
     - name: Restore dependencies
+      working-directory: practice2025
       run: dotnet restore
-    - name: Build
-      run: dotnet build --no-restore
-    - name: Test
-      run: dotnet test --no-build --verbosity normal
+
+    - name: Build only main project (task01)
+      working-directory: practice2025/task01
+      run: dotnet build --no-restore --configuration Debug
+
+    - name: Run tests (task01Tests)
+      working-directory: practice2025
+      run: dotnet test task01Tests/task01Tests.csproj --logger "console;verbosity=normal"
