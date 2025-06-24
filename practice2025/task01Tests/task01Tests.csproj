@@ -1,11 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <IsPackable>false</IsPackable>
-
     <GenerateProgramFile>false</GenerateProgramFile>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <OutputType>Library</OutputType>
   </PropertyGroup>
 
   <ItemGroup>
@@ -20,4 +21,5 @@
   <ItemGroup>
     <ProjectReference Include="..\task01\task01.csproj" />
   </ItemGroup>
+
 </Project>
