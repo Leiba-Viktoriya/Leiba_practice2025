@@ -12,7 +12,7 @@ namespace task02tests
             new() { Name = "Алексей", Faculty = "Менеджмент", Grades = new() { 5, 4, 5 } },
             new() { Name = "Вероника", Faculty = "Менеджмент", Grades = new() { 3, 3, 4 } },
             new() { Name = "Светлана", Faculty = "ИТ", Grades = new() { 5, 5, 5 } },
-            new() { Name = "Никита", Faculty = "ИТ", Grades = new() { 4, 5, 5 } }
+            new() { Name = "Никита", Faculty = "ИТ", Grades = new() { 5, 5, 5 } }
         };
 
         [Fact]
