@@ -1,31 +1,10 @@
+name: Build and Test .NET Project
+
 on:
   push:
   pull_request:
 
 jobs:
-  c-build:
-    name: C Solution Check
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout source code
-        uses: actions/checkout@v4
-
-      - name: Install GCC, Valgrind, and Clang-format
-        run: sudo apt-get update && sudo apt-get install -y gcc valgrind clang-format
-
-      - name: Check C code formatting
-        run: clang-format --dry-run --Werror *.c
-
-      - name: Compile
-        run: gcc -Wall -Wextra -Werror task.c test.c -o solution
-
-      - name: Run unit tests
-        run: ./solution
-
-      - name: Check for memory leaks
-        run: valgrind --leak-check=full ./solution
-
   dotnet-build:
     name: Build and Test .NET Project
     runs-on: windows-latest
@@ -36,7 +15,7 @@ jobs:
 
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@v4
-        with: 
+        with:
           dotnet-version: '8.x'
 
       - name: Restore dependencies
@@ -50,3 +29,4 @@ jobs:
       - name: Run tests
         working-directory: practice2025
         run: dotnet test --no-build
+        
