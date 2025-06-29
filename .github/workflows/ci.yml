@@ -1,52 +1,30 @@
+name: .NET CI
+
 on:
   push:
+    branches: [ main, task01, task02 ]
   pull_request:
+    branches: [ main ]
 
 jobs:
-  c-build:
-    name: C Solution Check
+  build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout source code
-        uses: actions/checkout@v4
+    - name: Checkout repository
+      uses: actions/checkout@v3
 
-      - name: Install GCC, Valgrind, and Clang-format
-        run: sudo apt-get update && sudo apt-get install -y gcc valgrind clang-format
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '8.x'
 
-      - name: Check C code formatting
-        run: clang-format --dry-run --Werror *.c
+    - name: Restore dependencies
+      run: dotnet restore practice2025.sln
 
-      - name: Compile
-        run: gcc -Wall -Wextra -Werror task.c test.c -o solution
+    - name: Build
+      run: dotnet build practice2025.sln --no-restore
 
-      - name: Run unit tests
-        run: ./solution
-
-      - name: Check for memory leaks
-        run: valgrind --leak-check=full ./solution
-
-  dotnet-build:
-    name: Build and Test .NET Project
-    runs-on: windows-latest
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Setup .NET SDK
-        uses: actions/setup-dotnet@v4
-        with: 
-          dotnet-version: '8.x'
-
-      - name: Restore dependencies
-        working-directory: practice2025
-        run: dotnet restore
-
-      - name: Build the project
-        working-directory: practice2025
-        run: dotnet build --no-restore
-
-      - name: Run tests
-        working-directory: practice2025
-        run: dotnet test --no-build
+    - name: Test
+      run: dotnet test practice2025.sln --no-build --verbosity normal
+      
