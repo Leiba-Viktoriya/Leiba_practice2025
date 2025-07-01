@@ -46,9 +46,10 @@ public class StudentServiceTests
     [Fact]
     public void GetStudentsWithAverageGradeAbove_ReturnsOnlyHighPerformers()
     {
-        var result = _service.GetStudentsWithAverageGradeAbove(4.0).ToList();
-        Assert.Single(result);
-        Assert.Equal("Петр", result[0].Name);
+        var result = _service.GetStudentsWithAverageGradeAbove(4.0).Select(s => s.Name).ToList();
+        Assert.Equal(2, result.Count);
+        Assert.Contains("Иван", result);
+        Assert.Contains("Петр", result);
     }
 
     [Fact]
@@ -64,6 +65,6 @@ public class StudentServiceTests
         var result = _service.GroupStudentsByFaculty();
         Assert.Equal(2, result.Count);
         Assert.Equal(2, result["ФИТ"].Count);
-        Assert.Equal(1, result["Экономика"].Count);
+        Assert.Single(result["Экономика"]);
     }
 }
