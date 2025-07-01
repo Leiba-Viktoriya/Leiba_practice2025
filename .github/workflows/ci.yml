@@ -31,4 +31,3 @@ jobs:
 
     - name: Test
       run: dotnet test practice2025.sln --no-build --verbosity normal
-      
