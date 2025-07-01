@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "task03", "Leiba_practice2025/task03/task03.csproj", "{cf35b5de-6593-4ee5-8ca8-cb9ca7f076de}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "task03", "task03/task03.csproj", "{cf35b5de-6593-4ee5-8ca8-cb9ca7f076de}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "task03tests", "Leiba_practice2025/task03tests/task03tests.csproj", "{5742af0f-d2ad-4147-a70a-a03bdffca6d9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "task03tests", "task03tests/task03tests.csproj", "{5742af0f-d2ad-4147-a70a-a03bdffca6d9}"
 EndProject
 
 Global
