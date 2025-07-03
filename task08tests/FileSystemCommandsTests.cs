@@ -1,5 +1,9 @@
-using FileSystemCommands;
+using System;
+using System.IO;
 using Xunit;
+using FileSystemCommands;
+
+namespace task08tests;
 
 public class FileSystemCommandsTests
 {
@@ -12,7 +16,7 @@ public class FileSystemCommandsTests
         File.WriteAllText(Path.Combine(testDir, "test2.txt"), "World");
 
         var command = new DirectorySizeCommand(testDir);
-        command.Execute(); // Проверяем, что не возникает исключений
+        command.Execute();
 
         Directory.Delete(testDir, true);
     }
@@ -26,7 +30,7 @@ public class FileSystemCommandsTests
         File.WriteAllText(Path.Combine(testDir, "file2.log"), "Log");
 
         var command = new FindFilesCommand(testDir, "*.txt");
-        command.Execute(); // Ожидаем 1 файл: file1.txt
+        command.Execute();
 
         Directory.Delete(testDir, true);
     }
