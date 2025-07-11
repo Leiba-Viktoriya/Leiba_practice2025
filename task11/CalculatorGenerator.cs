@@ -2,9 +2,9 @@ using System;
 using System.Linq;
 using System.IO;
 using System.Reflection;
+using System.Runtime.Loader;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
-using System.Runtime.Loader;
 
 namespace practice2025;
 
@@ -12,16 +12,20 @@ public static class CalculatorGenerator
 {
     public static object CreateCalculatorInstance()
     {
-        string code = @"
+        string className = "Calculator";
+        string interfaceName = typeof(ICalculator).FullName!;
+        string assemblyName = $"DynamicCalculator_{Guid.NewGuid()}";
+
+        string code = $@"
 using System;
 
-public class Calculator : practice2025.ICalculator
-{
+public class {className} : {interfaceName}
+{{
     public int Add(int a, int b) => a + b;
     public int Minus(int a, int b) => a - b;
     public int Mul(int a, int b) => a * b;
     public int Div(int a, int b) => a / b;
-}";
+}}";
 
         var syntaxTree = CSharpSyntaxTree.ParseText(code);
 
@@ -31,7 +35,7 @@ public class Calculator : practice2025.ICalculator
             .ToList();
 
         var compilation = CSharpCompilation.Create(
-            "DynamicCalculator",
+            assemblyName,
             new[] { syntaxTree },
             references,
             new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary)
@@ -42,13 +46,15 @@ public class Calculator : practice2025.ICalculator
 
         if (!result.Success)
         {
-            var diagnostics = string.Join("\n", result.Diagnostics.Select(d => d.ToString()));
-            throw new Exception("Ошибка компиляции:\n" + diagnostics);
+            var errors = string.Join(Environment.NewLine, result.Diagnostics.Select(d => d.ToString()));
+            throw new Exception("Ошибка компиляции:\n" + errors);
         }
 
         ms.Seek(0, SeekOrigin.Begin);
-        var assembly = AssemblyLoadContext.Default.LoadFromStream(ms);
-        var type = assembly.GetType("Calculator");
-        return Activator.CreateInstance(type);
+
+        var context = new AssemblyLoadContext(assemblyName, isCollectible: true);
+        var assembly = context.LoadFromStream(ms);
+        var type = assembly.GetType(className);
+        return Activator.CreateInstance(type!);
     }
 }
