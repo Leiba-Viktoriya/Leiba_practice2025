@@ -1,6 +1,6 @@
+using System;
 using Xunit;
 using practice2025.Task14;
-using System;
 
 namespace task14tests
 {
@@ -27,7 +27,7 @@ namespace task14tests
         {
             Func<double, double> X = x => x;
             double result = DefiniteIntegral.Solve(0, 5, X, 1e-6, 8);
-            Assert.Equal(10, result, 1e-5);
+            Assert.Equal(12.5, result, 1e-5);
         }
     }
 }
