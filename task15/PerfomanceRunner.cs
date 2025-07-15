@@ -1,7 +1,9 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
-using practice2025.Task15;
+using System.Linq;
 
 namespace practice2025.Task15
 {
@@ -12,45 +14,38 @@ namespace practice2025.Task15
             double to,
             Func<double, double> function,
             double[] steps,
-            int maxThreads,
-            int repeats = 5,
-            string outCsv = "performance.csv")
+            int maxThreads)
         {
-            using var writer = new StreamWriter(outCsv);
+            var csvPath = "performance.csv";
+            using var writer = new StreamWriter(csvPath, false, System.Text.Encoding.UTF8);
             writer.WriteLine("Step,Threads,AvgTimeMs");
 
-            foreach (var step in steps)
+            foreach (double step in steps)
             {
-                double singleMs = MeasureAvgTime(
-                    () => DefiniteIntegral.SolveSingleThread(from, to, function, step),
-                    repeats);
-                Console.WriteLine($"[Single] Step={step:E} => {singleMs:F2}ms");
+                double singleMs = Measure(() =>
+                    DefiniteIntegral.Solve(from, to, function, step, 1));
+                writer.WriteLine(
+                    $"{step.ToString("G", CultureInfo.InvariantCulture)},1," +
+                    $"{singleMs.ToString("F2", CultureInfo.InvariantCulture)}");
 
-                for (int t = 1; t <= maxThreads; t++)
+                for (int threads = 1; threads <= Math.Min(maxThreads, 3); threads++)
                 {
-                    double multiMs = MeasureAvgTime(
-                        () => DefiniteIntegral.Solve(from, to, function, step, t),
-                        repeats);
-                    Console.WriteLine($"[Multi ] Step={step:E}, Threads={t} => {multiMs:F2}ms");
-                    writer.WriteLine($"{step},{t},{multiMs:F2}");
+                    double multiMs = Measure(() =>
+                        DefiniteIntegral.Solve(from, to, function, step, threads));
+                    writer.WriteLine(
+                        $"{step.ToString("G", CultureInfo.InvariantCulture)}," +
+                        $"{threads}," +
+                        $"{multiMs.ToString("F2", CultureInfo.InvariantCulture)}");
                 }
             }
-
-            Console.WriteLine($"\nРезультаты сохранены в {outCsv}");
         }
 
-        private static double MeasureAvgTime(Action action, int repeats)
+        static double Measure(Action action)
         {
-            var sw = new Stopwatch();
-            double total = 0;
-            for (int i = 0; i < repeats; i++)
-            {
-                sw.Restart();
-                action();
-                sw.Stop();
-                total += sw.Elapsed.TotalMilliseconds;
-            }
-            return total / repeats;
+            var sw = Stopwatch.StartNew();
+            action();
+            sw.Stop();
+            return sw.Elapsed.TotalMilliseconds;
         }
     }
 }
