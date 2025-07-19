@@ -11,7 +11,6 @@ namespace Task18
         private readonly Thread _worker;
         private readonly IScheduler _scheduler;
 
-        // изменили private set на internal set
         public int ManagedThreadId { get; internal set; }
 
         public ServerThread(IScheduler scheduler)
